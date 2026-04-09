@@ -3,261 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Care | العيادة النخبوية</title>
+    <title>Elite Health Pro | المنصة الطبية الذكية</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --dark-bg: #0b0b0b;
-            --accent-purple: #8e7cc3; /* بنفسجي باهت */
-            --soft-purple: #4b3f72;
-            --glass: rgba(255, 255, 255, 0.05);
-            --text-gray: #b0b0b0;
+            --dark-bg: #050505;
+            --card-bg: #111111;
+            --accent-purple: #9d8df1;
+            --muted-purple: #4b3f72;
+            --text-gray: #a0a0a0;
         }
 
         body {
             background-color: var(--dark-bg);
             color: white;
-            font-family: 'Tajawal', 'Poppins', sans-serif;
+            font-family: 'Tajawal', sans-serif;
             overflow-x: hidden;
-            margin: 0;
         }
 
-        /* حلفية مموجة متحركة */
-        .wave-bg {
+        /* حلفية مموجة هادئة */
+        .gradient-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #151025 0%, #050505 100%);
             z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0b0b0b 100%);
-            overflow: hidden;
         }
 
         .wave {
-            position: absolute;
-            width: 200%; height: 200%;
-            background: rgba(142, 124, 195, 0.03);
-            border-radius: 40%;
-            animation: wave-anim 15s infinite linear;
-        }
-        @keyframes wave-anim {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            position: absolute; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(157, 141, 241, 0.05) 0%, transparent 50%);
+            animation: move 20s infinite linear;
         }
 
-        /* اختيار اللغة عند الدخول */
-        #lang-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--dark-bg);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: 0.5s;
+        @keyframes move { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* اختيار اللغة */
+        #lang-screen {
+            position: fixed; inset: 0; background: var(--dark-bg); z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
-        .lang-card {
-            background: var(--glass);
-            padding: 3rem;
-            border-radius: 20px;
-            border: 1px solid var(--accent-purple);
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        /* بروفايلات الأطباء */
+        /* بطاقات الأطباء الذكية */
         .doctor-card {
-            background: var(--glass);
-            border: 1px solid rgba(142, 124, 195, 0.2);
+            background: var(--card-bg);
+            border: 1px solid #222;
             border-radius: 20px;
-            transition: 0.4s;
-            overflow: hidden;
-            margin-bottom: 20px;
+            transition: 0.3s;
+            position: relative;
         }
         .doctor-card:hover {
             border-color: var(--accent-purple);
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(142, 124, 195, 0.1);
+            transform: translateY(-5px);
         }
 
-        .doctor-img {
-            width: 100%; height: 250px;
-            object-fit: cover;
-            filter: grayscale(40%);
+        .status-online { width: 12px; height: 12px; background: #00ff88; border-radius: 50%; display: inline-block; margin-left: 5px; }
+
+        /* الشات بوت (AI Chatbot) */
+        #ai-chat {
+            position: fixed; bottom: 20px; right: 20px; width: 350px;
+            background: var(--card-bg); border: 1px solid var(--accent-purple);
+            border-radius: 15px; display: none; z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .badge-purple {
-            background: var(--soft-purple);
-            color: #d1c4e9;
-            font-size: 0.8rem;
-        }
+        /* لوحة التحكم للمريض (EHR) */
+        .ehr-badge { background: rgba(157, 141, 241, 0.1); color: var(--accent-purple); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; }
 
-        /* النوافذ المنبثقة (Modals) */
-        .modal-content {
-            background: #151515;
-            border: 1px solid var(--accent-purple);
-            color: white;
-        }
-
-        .form-control, .form-select {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid #333;
-            color: white;
-        }
-        .form-control:focus {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-color: var(--accent-purple);
-            box-shadow: none;
-        }
-
-        .btn-elite {
-            background: var(--accent-purple);
-            color: white;
-            border-radius: 30px;
-            padding: 10px 25px;
-            transition: 0.3s;
-        }
-        .btn-elite:hover {
-            background: #a393d9;
-            transform: scale(1.05);
-        }
+        .btn-pay { background: #fff; color: #000; border-radius: 10px; font-weight: bold; }
+        .btn-purple { background: var(--accent-purple); color: #fff; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="lang-overlay">
-        <div class="lang-card">
-            <h2 class="mb-4">Welcome to Elite Care</h2>
-            <p class="text-muted">الرجاء اختيار اللغة المفضلة</p>
-            <button class="btn btn-elite m-2" onclick="setLang('ar')">العربية</button>
-            <button class="btn btn-outline-light m-2" onclick="setLang('en')">English</button>
+    <div id="lang-screen">
+        <h2 class="mb-4 fw-bold">Select Language / اختر اللغة</h2>
+        <div class="d-flex gap-3">
+            <button class="btn btn-outline-light px-4" onclick="initApp('ar')">العربية</button>
+            <button class="btn btn-outline-light px-4" onclick="initApp('fr')">Français</button>
+            <button class="btn btn-outline-light px-4" onclick="initApp('en')">English</button>
         </div>
     </div>
 
-    <div class="wave-bg">
-        <div class="wave" style="top: -50%; left: -50%;"></div>
-        <div class="wave" style="top: -60%; left: -40%; animation-duration: 20s; opacity: 0.5;"></div>
-    </div>
+    <div class="gradient-bg"><div class="wave"></div></div>
 
-    <nav class="navbar navbar-expand-lg py-3">
+    <nav class="navbar navbar-expand-lg border-bottom border-secondary">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" href="#">ELITE<span style="color: var(--accent-purple)">CARE</span></a>
-            <div class="ms-auto">
-                <span id="current-lang-label" class="badge border border-secondary">AR</span>
+            <a class="navbar-brand text-white fw-bold" href="#">ELITE<span style="color:var(--accent-purple)">PRO</span></a>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-muted small"><i class="bi bi-geo-alt"></i> الجزائر، دبي، الرياض</span>
+                <button class="btn btn-sm btn-purple" onclick="toggleEHR()">ملفي الطبي (EHR)</button>
             </div>
         </div>
     </nav>
 
     <header class="container py-5 text-center">
-        <h1 class="display-3 fw-bold mt-5" id="hero-title">رعاية طبية تليق بك</h1>
-        <p class="text-muted lead mx-auto" style="max-width: 600px;">نجمع بين الخبرة الطبية والرفاهية لتوفير بيئة استشفاء لا مثيل لها.</p>
+        <div class="col-lg-8 mx-auto p-4 rounded-4 shadow-lg" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px);">
+            <h4 class="mb-3 text-purple" style="color: var(--accent-purple)">مساعد التشخيص الذكي (AI)</h4>
+            <p class="text-muted">اكتب ما تشعر به وسنقترح عليك التخصص المناسب فوراً</p>
+            <div class="input-group mb-3">
+                <input id="symptomsInput" type="text" class="form-control bg-transparent text-white border-secondary" placeholder="مثال: أشعر بصداع شديد وألم في العين...">
+                <button class="btn btn-purple" onclick="analyzeSymptoms()">تحليل الأعراض</button>
+            </div>
+            <div id="ai-result" class="mt-2 small text-info"></div>
+        </div>
     </header>
 
-    <section class="container py-5">
-        <h3 class="mb-5 border-bottom border-secondary pb-3">نخبة الأطباء المتخصصين</h3>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="doctor-card p-3">
-                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="doctor-img rounded mb-3" alt="Dr">
-                    <span class="badge badge-purple mb-2">جراحة القلب</span>
-                    <h5 class="fw-bold">د. كمال أحمد</h5>
-                    <p class="small text-muted">بروفيسور من جامعة هارفارد، خبرة 20 عاماً في جراحات القلب الدقيقة.</p>
-                    <button class="btn btn-elite w-100" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="setDoctor('د. كمال أحمد')">حجز موعد</button>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="doctor-card p-3">
-                    <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="doctor-img rounded mb-3" alt="Dr">
-                    <span class="badge badge-purple mb-2">طب الأسنان التجميلي</span>
-                    <h5 class="fw-bold">د. سارة المنصور</h5>
-                    <p class="small text-muted">زميلة الأكاديمية البريطانية لطب الأسنان، متخصصة في ابتسامة هوليود.</p>
-                    <button class="btn btn-elite w-100" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="setDoctor('د. سارة المنصور')">حجز موعد</button>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="doctor-card p-3">
-                    <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="doctor-img rounded mb-3" alt="Dr">
-                    <span class="badge badge-purple mb-2">الأعصاب</span>
-                    <h5 class="fw-bold">د. ياسين كريم</h5>
-                    <p class="small text-muted">باحث ومختص في علاج اضطرابات الجهاز العصبي والعمود الفقري.</p>
-                    <button class="btn btn-elite w-100" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="setDoctor('د. ياسين كريم')">حجز موعد</button>
+    <main class="container py-4">
+        <h3 class="fw-bold mb-4"><i class="bi bi-calendar-check me-2"></i>الأطباء المتاحون الآن</h3>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="doctor-card p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <img src="https://i.pravatar.cc/150?u=1" class="rounded-circle" width="60" alt="Doc">
+                        <div class="text-end">
+                            <div class="status-online"></div> <span class="small text-success">متاح</span>
+                            <div class="text-warning small mt-1"><i class="bi bi-star-fill"></i> 4.9 (120 تقييم)</div>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold">د. ريان سامي</h5>
+                    <p class="text-muted small">أخصائي جراحة الأعصاب - مجمع مايو كلينك سابقاً</p>
+                    <div class="ehr-badge mb-3">أقرب موعد: اليوم 18:00</div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-purple flex-grow-1" onclick="openBooking('د. ريان سامي')">حجز ذكي</button>
+                        <button class="btn btn-outline-secondary" title="الموقع"><i class="bi bi-map"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </main>
 
-    <div class="modal fade" id="bookModal" tabindex="-1">
+    <div id="ehr-panel" class="container py-5" style="display: none;">
+        <div class="bg-dark p-4 rounded-4 border border-secondary">
+            <h4 class="fw-bold mb-4 text-purple">ملفك الطبي الإلكتروني (EHR)</h4>
+            <div class="row text-center">
+                <div class="col-4 border-end border-secondary"><h6>الوصفات</h6><p class="h4">3</p></div>
+                <div class="col-4 border-end border-secondary"><h6>التحاليل</h6><p class="h4">5</p></div>
+                <div class="col-4"><h6>المواعيد القادمة</h6><p class="h4">1</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="bookingModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold">تأكيد الموعد مع <span id="docName" class="text-info"></span></h5>
+            <div class="modal-content bg-dark border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">تأكيد الحجز والدفع</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="reservationForm">
-                        <div class="mb-3">
-                            <label class="form-label small">الاسم الكامل</label>
-                            <input type="text" class="form-control" required>
+                    <p class="small text-muted">سيتم إرسال تذكير SMS تلقائياً قبل الموعد بـ 24 ساعة.</p>
+                    <div class="mb-3">
+                        <label class="form-label">ملاحظات للملف الطبي</label>
+                        <textarea class="form-control bg-transparent text-white border-secondary" placeholder="اشرح للطبيب حالتك بدقة..."></textarea>
+                    </div>
+                    <div class="p-3 bg-secondary bg-opacity-10 rounded mb-3">
+                        <h6>طريقة الدفع</h6>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-pay w-100">Visa / Mastercard</button>
+                            <button class="btn btn-pay w-100">PayPal</button>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label small">ملاحظات طبية (رسالة للطبيب)</label>
-                            <textarea class="form-control" rows="3" placeholder="اشرح باختصار ما تشعر به..." required></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 mb-3">
-                                <label class="form-label small">التاريخ</label>
-                                <input type="date" class="form-control" required>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <label class="form-label small">الهاتف</label>
-                                <input type="tel" class="form-control" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-elite w-100 mt-2">إرسال الطلب للطبيب</button>
-                    </form>
+                    </div>
+                    <button class="btn btn-purple w-100 py-3 fw-bold" onclick="confirmAll()">تأكيد الموعد النهائي</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="ai-chat">
+        <div class="p-3 border-bottom border-secondary d-flex justify-content-between">
+            <span class="fw-bold"><i class="bi bi-robot me-2"></i>المساعد الطبي الذكي</span>
+            <button class="btn-close btn-close-white btn-sm" onclick="toggleChat()"></button>
+        </div>
+        <div id="chat-body" class="p-3 small" style="height: 250px; overflow-y: auto;">
+            <div class="bg-secondary bg-opacity-25 p-2 rounded mb-2">مرحباً! كيف يمكنني مساعدتك اليوم؟</div>
+        </div>
+        <div class="p-2 border-top border-secondary">
+            <input type="text" class="form-control form-control-sm bg-transparent text-white" placeholder="اسأل أي شيء...">
+        </div>
+    </div>
+
+    <button class="btn btn-purple position-fixed rounded-circle shadow-lg" style="bottom:20px; right:20px; width:60px; height:60px;" onclick="toggleChat()">
+        <i class="bi bi-chat-dots fs-3"></i>
+    </button>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // اختيار اللغة
-        function setLang(lang) {
-            const htmlTag = document.getElementById('mainHtml');
-            const overlay = document.getElementById('lang-overlay');
-            
-            if(lang === 'en') {
-                htmlTag.dir = 'ltr';
-                htmlTag.lang = 'en';
-                document.getElementById('current-lang-label').innerText = 'EN';
-                document.getElementById('hero-title').innerText = 'Medical Care You Deserve';
-                // يمكن إضافة ترجمة لبقية العناصر هنا
-            } else {
-                htmlTag.dir = 'rtl';
-                htmlTag.lang = 'ar';
-                document.getElementById('current-lang-label').innerText = 'AR';
+        // ميزة 1: اختيار اللغة والبدء
+        function initApp(lang) {
+            document.getElementById('lang-screen').style.display = 'none';
+            if(lang === 'fr' || lang === 'en') {
+                document.getElementById('mainHtml').dir = 'ltr';
+                alert('Language switched! (Demo: Labels remain in AR for clarity)');
             }
-            
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.style.display = 'none', 500);
         }
 
-        // تحديد اسم الطبيب في النموذج
-        function setDoctor(name) {
-            document.getElementById('docName').innerText = name;
+        // ميزة 2: تحليل الأعراض (AI Simulation)
+        function analyzeSymptoms() {
+            const input = document.getElementById('symptomsInput').value;
+            const res = document.getElementById('ai-result');
+            if(input.includes('ألم') || input.includes('صداع')) {
+                res.innerHTML = "تحليل AI: نقترح عليك حجز موعد في قسم <b>الأعصاب</b> أو <b>الباطنية</b>.";
+            } else {
+                res.innerHTML = "يرجى كتابة أعراضك بدقة ليتمكن النظام من توجيهك.";
+            }
         }
 
-        // إرسال النموذج
-        document.getElementById('reservationForm').onsubmit = function(e) {
-            e.preventDefault();
-            const doc = document.getElementById('docName').innerText;
-            alert('شكراً لك! تم إرسال ملاحظاتك وسيقوم ' + doc + ' بمراجعتها والرد عليك فوراً.');
-            bootstrap.Modal.getInstance(document.getElementById('bookModal')).hide();
-        };
+        // ميزة 3: الحجز والدفع
+        function openBooking(doc) {
+            new bootstrap.Modal('#bookingModal').show();
+        }
+
+        function confirmAll() {
+            alert('تم الحجز بنجاح! \n1. تم تحديث ملفك الطبي (EHR)\n2. أرسلنا تأكيداً عبر SMS\n3. تم معالجة الدفع الإلكتروني');
+            location.reload();
+        }
+
+        // ميزة 4: لوحة الملف الطبي
+        function toggleEHR() {
+            const panel = document.getElementById('ehr-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            panel.scrollIntoView({behavior: 'smooth'});
+        }
+
+        // ميزة 5: الشات بوت
+        function toggleChat() {
+            const chat = document.getElementById('ai-chat');
+            chat.style.display = chat.style.display === 'none' ? 'block' : 'none';
+        }
     </script>
 </body>
 </html>
