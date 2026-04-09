@@ -13,7 +13,7 @@
         :root {
             --dark-bg: #080808;
             --card-bg: #121212;
-            --accent-purple: #b39ddb; /* بنفسجي باهت وواضح */
+            --accent-purple: #b39ddb;
             --deep-purple: #4527a0;
             --text-main: #ffffff;
             --text-secondary: #e0e0e0;
@@ -26,7 +26,6 @@
             line-height: 1.6;
         }
 
-        /* تأثير الخلفية المموجة */
         .wave-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             background: linear-gradient(45deg, #080808 0%, #1a0f2e 100%);
@@ -39,29 +38,32 @@
         }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* الأقسام */
         section { padding: 60px 0; border-bottom: 1px solid #222; }
         .section-title { color: var(--accent-purple); font-weight: 800; margin-bottom: 40px; text-align: center; }
 
-        /* خريطة العيادة الداخلية */
+        /* تصميم خريطة العيادة المتطور */
         .clinic-map {
             background: var(--card-bg);
             border: 2px solid var(--deep-purple);
             border-radius: 20px;
-            padding: 20px;
-            position: relative;
-            min-height: 300px;
+            padding: 25px;
+        }
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
         .room {
-            border: 1px dashed var(--accent-purple);
+            border: 1px solid rgba(179, 157, 219, 0.3);
             padding: 15px;
             text-align: center;
-            background: rgba(179, 157, 219, 0.05);
-            margin-bottom: 10px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            font-size: 0.85rem;
             transition: 0.3s;
         }
-        .room:hover { background: var(--deep-purple); color: white; }
+        .room.active { background: var(--deep-purple); border-color: var(--accent-purple); }
+        .room:hover { background: rgba(179, 157, 219, 0.1); transform: scale(1.02); }
 
         /* بطاقات الأطباء */
         .doctor-card {
@@ -69,13 +71,11 @@
             border-radius: 20px;
             border: 1px solid #333;
             padding: 25px;
-            height: 100%;
             transition: 0.3s;
         }
-        .doctor-card:hover { border-color: var(--accent-purple); transform: translateY(-10px); }
-        .doc-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-purple); }
+        .doc-img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-purple); }
 
-        /* آراء المرضى */
+        /* نظام التقييمات */
         .review-card {
             background: rgba(255, 255, 255, 0.03);
             border-right: 4px solid var(--accent-purple);
@@ -83,11 +83,21 @@
             border-radius: 10px;
             margin-bottom: 15px;
         }
+        .rating-input {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 25px;
+        }
+        .form-control {
+            background: #080808;
+            border: 1px solid #333;
+            color: white;
+        }
+        .form-control:focus { background: #111; color: white; border-color: var(--accent-purple); box-shadow: none; }
 
-        /* الشات بوت واللغة */
         #lang-screen { position: fixed; inset: 0; background: var(--dark-bg); z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .btn-elite { background: var(--accent-purple); color: #000; font-weight: 700; border-radius: 30px; padding: 12px 30px; border: none; }
-        
         .clear-text { color: var(--text-secondary); font-size: 1.1rem; }
     </style>
 </head>
@@ -108,16 +118,14 @@
         <div class="container">
             <a class="navbar-brand fw-bold text-white fs-3" href="#">ELITE<span style="color:var(--accent-purple)">CARE</span></a>
             <div class="d-flex gap-3">
-                <button class="btn btn-outline-light btn-sm" onclick="location.href='#map'">موقعنا</button>
-                <button class="btn btn-elite btn-sm" data-bs-toggle="modal" data-bs-target="#ehrModal">ملفي الطبي</button>
+                <button class="btn btn-outline-light btn-sm" onclick="location.href='#map'">الخريطة</button>
+                <button class="btn btn-elite btn-sm" onclick="location.href='#reviews'">آراء المرضى</button>
             </div>
         </div>
     </nav>
 
     <section id="doctors" class="container">
         <h2 class="section-title">نخبة الأطباء المتخصصين</h2>
-        
-        <h4 class="mb-4 text-info"><i class="bi bi-person-badge me-2"></i> قسم جراحة العظام والكسور</h4>
         <div class="row g-4 mb-5">
             <div class="col-md-6">
                 <div class="doctor-card">
@@ -125,14 +133,11 @@
                         <img src="https://i.pravatar.cc/150?u=a" class="doc-img me-3">
                         <div>
                             <h5 class="fw-bold mb-0">د. سمير غانم</h5>
-                            <small class="text-warning">⭐⭐⭐⭐⭐ (240 رأي)</small>
+                            <small class="text-info">جراحة العظام (مكتب 101)</small>
                         </div>
                     </div>
-                    <p class="clear-text">خبير في استبدال المفاصل وجراحة العمود الفقري. دكتوراه من جامعة سوربون.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-success">غرفة 101 - الطابق 1</span>
-                        <button class="btn btn-elite btn-sm" onclick="bookNow('د. سمير')">حجز موعد</button>
-                    </div>
+                    <p class="clear-text">خبير في استبدال المفاصل. دكتوراه من جامعة سوربون.</p>
+                    <button class="btn btn-elite w-100" onclick="bookWithNote('د. سمير غانم')">حجز موعد مع ملاحظة</button>
                 </div>
             </div>
             <div class="col-md-6">
@@ -141,69 +146,99 @@
                         <img src="https://i.pravatar.cc/150?u=b" class="doc-img me-3">
                         <div>
                             <h5 class="fw-bold mb-0">د. ليلى حسن</h5>
-                            <small class="text-warning">⭐⭐⭐⭐⭐ (180 رأي)</small>
+                            <small class="text-info">الطب الرياضي (مكتب 102)</small>
                         </div>
                     </div>
-                    <p class="clear-text">متخصصة في إصابات الملاعب والطب الرياضي. طبيبة سابقة للمنتخب الوطني.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-success">غرفة 102 - الطابق 1</span>
-                        <button class="btn btn-elite btn-sm" onclick="bookNow('د. ليلى')">حجز موعد</button>
-                    </div>
+                    <p class="clear-text">متخصصة في إصابات الملاعب. طبيبة سابقة للمنتخب الوطني.</p>
+                    <button class="btn btn-elite w-100" onclick="bookWithNote('د. ليلى حسن')">حجز موعد مع ملاحظة</button>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="map" class="container">
-        <h2 class="section-title">دليل الوصول والعيادة</h2>
-        <div class="row g-4">
-            <div class="col-lg-7">
-                <h5 class="mb-3">موقعنا على الخريطة (Google Maps)</h5>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3405.8486241434!2d-8.0082!3d31.6295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDM3JzQ2LjIiTiA4wrAwMCcyOS41Ilc!5e0!3m2!1sar!2s!4v1630000000000" 
-                        width="100%" height="350" style="border:0; border-radius: 20px;" allowfullscreen="" loading="lazy"></iframe>
-            </div>
-            <div class="col-lg-5">
-                <h5 class="mb-3">توزيع المكاتب الداخلي</h5>
+        <h2 class="section-title">التصميم الداخلي للعيادة</h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
                 <div class="clinic-map">
-                    <div class="room text-info fw-bold">الاستقبال والانتظار الرئيسي</div>
-                    <div class="row g-2">
-                        <div class="col-6"><div class="room small">مكتب 101<br>د. سمير</div></div>
-                        <div class="col-6"><div class="room small">مكتب 102<br>د. ليلى</div></div>
-                        <div class="col-6"><div class="room small">غرفة الأشعة</div></div>
-                        <div class="col-6"><div class="room small">المختبر</div></div>
+                    <div class="room active mb-3 fw-bold py-3 fs-5">الاستقبال ومنطقة الانتظار الفاخرة</div>
+                    <div class="map-grid">
+                        <div class="room">مكتب 101<br><b>د. سمير</b></div>
+                        <div class="room">مكتب 102<br><b>د. ليلى</b></div>
+                        <div class="room">مكتب 103<br><b>د. ياسين</b></div>
+                        <div class="room">المختبر<br>الطبي</div>
+                        <div class="room">غرفة الأشعة<br>X-Ray</div>
+                        <div class="room">الصيدلية<br>الداخلية</div>
+                        <div class="room">الكافتيريا</div>
+                        <div class="room">المصلى</div>
+                        <div class="room">دورة المياه</div>
                     </div>
-                    <div class="room mt-2 bg-danger bg-opacity-25 border-danger">مخرج الطوارئ</div>
+                    <div class="text-center mt-3 small text-muted">الطابق الأول - الجناح الطبي A</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="container bg-white bg-opacity-5 rounded-4 p-5 my-5">
-        <h2 class="section-title">قصص نجاح وآراء المرضى</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="review-card">
-                    <h6 class="fw-bold">أحمد محمود <span class="text-warning">⭐⭐⭐⭐⭐</span></h6>
-                    <p class="small text-muted mb-1">المريض لدى: د. سمير غانم</p>
-                    <p class="clear-text">"أجريت عملية استبدال ركبة، والنتائج كانت مذهلة. عدت للمشي خلال أسبوع واحد فقط!"</p>
+    <section id="reviews" class="container">
+        <h2 class="section-title">آراء المستخدمين ونظام التقييم</h2>
+        <div class="row g-5">
+            <div class="col-md-6">
+                <h4 class="mb-4">ماذا يقول مرضانا؟</h4>
+                <div id="reviewsList">
+                    <div class="review-card">
+                        <h6>أحمد محمود <span class="text-warning">⭐⭐⭐⭐⭐</span></h6>
+                        <p class="small text-muted">د. سمير غانم</p>
+                        <p class="clear-text">"العيادة منظمة جداً والخريطة الداخلية ساعدتني في الوصول للمكتب بسهولة."</p>
+                    </div>
+                    <div class="review-card">
+                        <h6>سارة خالد <span class="text-warning">⭐⭐⭐⭐⭐</span></h6>
+                        <p class="small text-muted">د. ليلى حسن</p>
+                        <p class="clear-text">"دكتورة متميزة جداً، كتبت لها ملاحظة حول حساسيتي للأدوية واستقبلتني بمعرفة كاملة بحالتي."</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="review-card">
-                    <h6 class="fw-bold">فاطمة علي <span class="text-warning">⭐⭐⭐⭐⭐</span></h6>
-                    <p class="small text-muted mb-1">المريض لدى: د. ليلى حسن</p>
-                    <p class="clear-text">"تعامل راقٍ جداً، شخصت إصابتي في الكاحل بدقة ووفرت لي برنامج تأهيل ممتاز."</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="review-card">
-                    <h6 class="fw-bold">ياسين عمر <span class="text-warning">⭐⭐⭐⭐</span></h6>
-                    <p class="small text-muted mb-1">المريض لدى: قسم المختبر</p>
-                    <p class="clear-text">"النتائج سريعة جداً، وصلتني رسالة على الهاتف بملفي الطبي خلال ساعتين."</p>
+            <div class="col-md-6">
+                <div class="rating-input">
+                    <h4 class="mb-4">شاركنا تجربتك</h4>
+                    <form id="reviewForm">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="revName" placeholder="اسمك الكامل" required>
+                        </div>
+                        <div class="mb-3">
+                            <select class="form-control" id="revDoc">
+                                <option value="">اختر الطبيب الذي زرتَه</option>
+                                <option>د. سمير غانم</option>
+                                <option>د. ليلى حسن</option>
+                                <option>المختبر / الإدارة</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="revText" rows="3" placeholder="اكتب رأيك هنا..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-elite w-100">نشر التقييم</button>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
+
+    <div class="modal fade" id="noteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">حجز موعد مع <span id="modalDocName" class="text-purple"></span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">اكتب ملاحظة للطبيب عن حالتك</label>
+                        <textarea class="form-control" id="userNote" rows="4" placeholder="مثلاً: أعاني من ألم مستمر في الركبة منذ يومين..."></textarea>
+                    </div>
+                    <button class="btn btn-elite w-100" onclick="confirmBooking()">إرسال الملاحظة وتأكيد الحجز</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="py-4 text-center border-top border-secondary mt-5">
         <p class="text-muted">عيادة النخبة برو © 2026 - رعاية صحية ذكية بامتياز</p>
@@ -216,9 +251,36 @@
             setTimeout(() => document.getElementById('lang-screen').style.display = 'none', 500);
         }
 
-        function bookNow(doc) {
-            alert("سيتم توجيهك لنظام الحجز الذكي الخاص بـ " + doc + "\nسيصل إشعار فوري لمكتب الطبيب.");
+        // وظيفة الحجز مع ملاحظة
+        function bookWithNote(docName) {
+            document.getElementById('modalDocName').innerText = docName;
+            new bootstrap.Modal(document.getElementById('noteModal')).show();
         }
+
+        function confirmBooking() {
+            const note = document.getElementById('userNote').value;
+            alert("تم إرسال ملاحظتك: (" + note + ")\nتم تأكيد حجزك بنجاح وسيكون الطبيب بانتظارك.");
+            bootstrap.Modal.getInstance(document.getElementById('noteModal')).hide();
+        }
+
+        // وظيفة إضافة تقييم جديد
+        document.getElementById('reviewForm').onsubmit = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('revName').value;
+            const doc = document.getElementById('revDoc').value;
+            const text = document.getElementById('revText').value;
+
+            const newReview = `
+                <div class="review-card">
+                    <h6>${name} <span class="text-warning">⭐⭐⭐⭐⭐</span></h6>
+                    <p class="small text-muted">${doc}</p>
+                    <p class="clear-text">"${text}"</p>
+                </div>
+            `;
+            document.getElementById('reviewsList').insertAdjacentHTML('afterbegin', newReview);
+            this.reset();
+            alert("شكراً لك! تم نشر تقييمك.");
+        };
     </script>
 </body>
 </html>
